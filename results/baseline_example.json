@@ -1,0 +1,276 @@
+{
+  "mean_fitness": 7.9791951179504395,
+  "reached": 0,
+  "scenarios": [
+    {
+      "map": 1,
+      "scenario": 1,
+      "fitness": 4.86531925201416,
+      "reached": false,
+      "moved_px": 1892.200004814926,
+      "final_dist_ratio": 0.35143788133850007,
+      "steps": 500
+    },
+    {
+      "map": 1,
+      "scenario": 2,
+      "fitness": 5.940063953399658,
+      "reached": false,
+      "moved_px": 344.2677873380089,
+      "final_dist_ratio": 0.9995236727504574,
+      "steps": 52
+    },
+    {
+      "map": 1,
+      "scenario": 3,
+      "fitness": 5.449007511138916,
+      "reached": false,
+      "moved_px": 495.95908569035413,
+      "final_dist_ratio": 0.998202490886781,
+      "steps": 122
+    },
+    {
+      "map": 1,
+      "scenario": 4,
+      "fitness": 3.952868938446045,
+      "reached": false,
+      "moved_px": 3350.006693098397,
+      "final_dist_ratio": 0.8143005839498857,
+      "steps": 500
+    },
+    {
+      "map": 1,
+      "scenario": 5,
+      "fitness": 3.8016369342803955,
+      "reached": false,
+      "moved_px": 2714.7793131299213,
+      "final_dist_ratio": 0.502098348507149,
+      "steps": 405
+    },
+    {
+      "map": 2,
+      "scenario": 1,
+      "fitness": 2.6647114753723145,
+      "reached": false,
+      "moved_px": 1984.0577340774487,
+      "final_dist_ratio": 0.6830915980346455,
+      "steps": 500
+    },
+    {
+      "map": 2,
+      "scenario": 2,
+      "fitness": 7.5803961753845215,
+      "reached": false,
+      "moved_px": 146.71338414619464,
+      "final_dist_ratio": 0.9253211293845877,
+      "steps": 41
+    },
+    {
+      "map": 2,
+      "scenario": 3,
+      "fitness": 4.312198638916016,
+      "reached": false,
+      "moved_px": 1669.5139349256222,
+      "final_dist_ratio": 0.5526413876884998,
+      "steps": 500
+    },
+    {
+      "map": 2,
+      "scenario": 4,
+      "fitness": 4.723177433013916,
+      "reached": false,
+      "moved_px": 1880.734385704633,
+      "final_dist_ratio": 0.7756421827730455,
+      "steps": 500
+    },
+    {
+      "map": 2,
+      "scenario": 5,
+      "fitness": 6.80531644821167,
+      "reached": false,
+      "moved_px": 806.5889613262423,
+      "final_dist_ratio": 0.1379052021131959,
+      "steps": 500
+    },
+    {
+      "map": 3,
+      "scenario": 1,
+      "fitness": 6.367051601409912,
+      "reached": false,
+      "moved_px": 1539.8374421416295,
+      "final_dist_ratio": 1.0190721584673212,
+      "steps": 500
+    },
+    {
+      "map": 3,
+      "scenario": 2,
+      "fitness": 11.49705696105957,
+      "reached": false,
+      "moved_px": 595.7921871797614,
+      "final_dist_ratio": 0.604759899043658,
+      "steps": 500
+    },
+    {
+      "map": 3,
+      "scenario": 3,
+      "fitness": 2.8342125415802,
+      "reached": false,
+      "moved_px": 1860.121468762668,
+      "final_dist_ratio": 0.7941792144885191,
+      "steps": 484
+    },
+    {
+      "map": 3,
+      "scenario": 4,
+      "fitness": 3.939537525177002,
+      "reached": false,
+      "moved_px": 1686.254435317008,
+      "final_dist_ratio": 0.12261777796029617,
+      "steps": 225
+    },
+    {
+      "map": 3,
+      "scenario": 5,
+      "fitness": 18.061281204223633,
+      "reached": false,
+      "moved_px": 694.9500566577295,
+      "final_dist_ratio": 0.856536848416956,
+      "steps": 500
+    },
+    {
+      "map": 4,
+      "scenario": 1,
+      "fitness": 5.370677947998047,
+      "reached": false,
+      "moved_px": 946.9678001774262,
+      "final_dist_ratio": 0.2779165909018988,
+      "steps": 500
+    },
+    {
+      "map": 4,
+      "scenario": 2,
+      "fitness": 29.540287017822266,
+      "reached": false,
+      "moved_px": 207.11809037360592,
+      "final_dist_ratio": 0.31552048271647154,
+      "steps": 500
+    },
+    {
+      "map": 4,
+      "scenario": 3,
+      "fitness": 7.332948207855225,
+      "reached": false,
+      "moved_px": 345.52185156956756,
+      "final_dist_ratio": 1.0111461518418214,
+      "steps": 65
+    },
+    {
+      "map": 4,
+      "scenario": 4,
+      "fitness": 9.062919616699219,
+      "reached": false,
+      "moved_px": 806.3371881615236,
+      "final_dist_ratio": 0.1719177756656338,
+      "steps": 500
+    },
+    {
+      "map": 4,
+      "scenario": 5,
+      "fitness": 36.64537811279297,
+      "reached": false,
+      "moved_px": 376.15894021269145,
+      "final_dist_ratio": 0.6526996973242564,
+      "steps": 447
+    },
+    {
+      "map": 5,
+      "scenario": 1,
+      "fitness": 4.366654396057129,
+      "reached": false,
+      "moved_px": 1655.1235240131784,
+      "final_dist_ratio": 0.419268828259865,
+      "steps": 500
+    },
+    {
+      "map": 5,
+      "scenario": 2,
+      "fitness": 8.848627090454102,
+      "reached": false,
+      "moved_px": 703.1663670035613,
+      "final_dist_ratio": 0.8313922616485961,
+      "steps": 125
+    },
+    {
+      "map": 5,
+      "scenario": 3,
+      "fitness": 7.583130836486816,
+      "reached": false,
+      "moved_px": 1895.5589915404191,
+      "final_dist_ratio": 0.8687385309547178,
+      "steps": 423
+    },
+    {
+      "map": 5,
+      "scenario": 4,
+      "fitness": 7.309017181396484,
+      "reached": false,
+      "moved_px": 110.75245436667736,
+      "final_dist_ratio": 1.033874880422036,
+      "steps": 50
+    },
+    {
+      "map": 5,
+      "scenario": 5,
+      "fitness": 4.922523021697998,
+      "reached": false,
+      "moved_px": 635.9761897164555,
+      "final_dist_ratio": 0.936795511439235,
+      "steps": 175
+    },
+    {
+      "map": 6,
+      "scenario": 1,
+      "fitness": 3.746367931365967,
+      "reached": false,
+      "moved_px": 2604.8013494315246,
+      "final_dist_ratio": 0.392876983774425,
+      "steps": 415
+    },
+    {
+      "map": 6,
+      "scenario": 2,
+      "fitness": 8.614577293395996,
+      "reached": false,
+      "moved_px": 1663.016452111902,
+      "final_dist_ratio": 0.6829383889631616,
+      "steps": 500
+    },
+    {
+      "map": 6,
+      "scenario": 3,
+      "fitness": 3.573880195617676,
+      "reached": false,
+      "moved_px": 2286.155350776964,
+      "final_dist_ratio": 0.3630552309765426,
+      "steps": 281
+    },
+    {
+      "map": 6,
+      "scenario": 4,
+      "fitness": 5.065192222595215,
+      "reached": false,
+      "moved_px": 1001.2406053806069,
+      "final_dist_ratio": 0.7238388690516383,
+      "steps": 128
+    },
+    {
+      "map": 6,
+      "scenario": 5,
+      "fitness": 4.599817752838135,
+      "reached": false,
+      "moved_px": 158.207780708923,
+      "final_dist_ratio": 0.9572634709474459,
+      "steps": 64
+    }
+  ]
+}
