@@ -26,8 +26,8 @@ import os
 # maps: './myfolder/Maps'
 # coordinates: './myfolder/coordinates.txt'
 # example chromosome: './myfolder/example_rover.npy'
-PATH = os.path.join(".", "data", "spoc2", "morphing")
-
+HEIGHTMAP_NAMES = ['Map1.jpg', 'Map2.jpg', 'Map3.jpg', 'Map4.jpg', 'Map5.jpg', 'Map6.jpg']
+COORDINATE_NAME = '{}/coordinates.txt'.format(PATH)
 # Parameters for the rover modes
 MASK_SIZE = 11
 NUMBER_OF_MODES = 4
@@ -75,9 +75,7 @@ TOTAL_NUM_SCENARIOS = MAPS_PER_EVALUATION * SCENARIOS_PER_MAP
 
 # File path and names
 #HEIGHTMAP_NAMES = ['Map4.JPG']
-HEIGHTMAP_NAMES = ['Map1.jpg', 'Map2.JPG', 'Map3.JPG', 'Map4.JPG', 'Map5.JPG', 'Map6.jpg']
-COORDINATE_NAME = '{}/coordinates.txt'.format(PATH)
-# Kernel size for smoothing maps a little bit with a Gaussian kernel
+HEIGHTMAP_NAMES = ['Map1.jpg', 'Map2.jpg', 'Map3.jpg', 'Map4.jpg', 'Map5.jpg', 'Map6.jpg']
 BLUR_SIZE = 7
 
 # Loading raw data
