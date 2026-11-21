@@ -57,7 +57,7 @@ def main():
     base = np.asarray(udp.example(), dtype=float)
     example_masks = ch.get_masks(base)
     lb, ub = ch.bounds()
-
+    lb_m, ub_m = lb[ch.MASKS], ub[ch.MASKS]
     search_scenarios = SUBSET if a.scenarios == "subset" else ALL_SCENARIOS
 
     def objective(m):
