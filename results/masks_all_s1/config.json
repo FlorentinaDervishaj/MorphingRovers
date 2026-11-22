@@ -1,0 +1,17 @@
+{
+  "free": "masks",
+  "start": null,
+  "init": "example",
+  "seed": 1,
+  "sigma": 1.0,
+  "popsize": 22,
+  "scenarios": "all",
+  "max_evals": 300,
+  "workers": 5,
+  "out": "results/masks_all_s1",
+  "n_free": 484,
+  "step_masks": 0.09990598984425941,
+  "step_output": 0.09990598984425941,
+  "start_fitness_search": 7.984409175820925,
+  "start_fitness_30": 7.984409175820925
+}

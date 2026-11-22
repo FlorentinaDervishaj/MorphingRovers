@@ -1,0 +1,22 @@
+[
+  {
+    "rover": "rover-i shembull (ESA)",
+    "fitness_30": 7.984409175820925,
+    "reached": 0
+  },
+  {
+    "rover": "results/masks_all_s1/best_rover.npy",
+    "fitness_30": 7.109909223130215,
+    "reached": 1
+  },
+  {
+    "rover": "results/masks_all_s2/best_rover.npy",
+    "fitness_30": 6.928696865896859,
+    "reached": 2
+  },
+  {
+    "rover": "results/masks_all_s3/best_rover.npy",
+    "fitness_30": 7.04859789331044,
+    "reached": 2
+  }
+]
