@@ -1,0 +1,13 @@
+{
+  "init": "example",
+  "seed": 2,
+  "sigma": null,
+  "popsize": 22,
+  "scenarios": "all",
+  "max_evals": 300,
+  "workers": 5,
+  "out": "results/masks_all_s2",
+  "sigma0": 0.09990598984425941,
+  "start_fitness_search": 7.984409175820925,
+  "start_fitness_30": 7.984409175820925
+}
