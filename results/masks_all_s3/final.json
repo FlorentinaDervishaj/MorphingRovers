@@ -1,0 +1,188 @@
+{
+  "best_fitness_search": 7.04859789331044,
+  "full_fitness_30": 7.04859789331044,
+  "reached_30": 2,
+  "n_evals": 309,
+  "scenarios": [
+    {
+      "map": 1,
+      "scenario": 1,
+      "fitness": 4.99013018056533,
+      "reached": false
+    },
+    {
+      "map": 1,
+      "scenario": 2,
+      "fitness": 5.939620680637745,
+      "reached": false
+    },
+    {
+      "map": 1,
+      "scenario": 3,
+      "fitness": 5.447853036566016,
+      "reached": false
+    },
+    {
+      "map": 1,
+      "scenario": 4,
+      "fitness": 4.028847046139518,
+      "reached": false
+    },
+    {
+      "map": 1,
+      "scenario": 5,
+      "fitness": 4.160976764858361,
+      "reached": false
+    },
+    {
+      "map": 2,
+      "scenario": 1,
+      "fitness": 2.587965775935402,
+      "reached": false
+    },
+    {
+      "map": 2,
+      "scenario": 2,
+      "fitness": 7.492774943756871,
+      "reached": false
+    },
+    {
+      "map": 2,
+      "scenario": 3,
+      "fitness": 4.196879269260407,
+      "reached": false
+    },
+    {
+      "map": 2,
+      "scenario": 4,
+      "fitness": 4.754828979491663,
+      "reached": false
+    },
+    {
+      "map": 2,
+      "scenario": 5,
+      "fitness": 7.506149899886111,
+      "reached": false
+    },
+    {
+      "map": 3,
+      "scenario": 1,
+      "fitness": 6.304611917845165,
+      "reached": false
+    },
+    {
+      "map": 3,
+      "scenario": 2,
+      "fitness": 10.752687901369029,
+      "reached": false
+    },
+    {
+      "map": 3,
+      "scenario": 3,
+      "fitness": 2.8623057114229624,
+      "reached": false
+    },
+    {
+      "map": 3,
+      "scenario": 4,
+      "fitness": 7.883194519614648,
+      "reached": false
+    },
+    {
+      "map": 3,
+      "scenario": 5,
+      "fitness": 16.295778889997337,
+      "reached": false
+    },
+    {
+      "map": 4,
+      "scenario": 1,
+      "fitness": 5.438797321663515,
+      "reached": false
+    },
+    {
+      "map": 4,
+      "scenario": 2,
+      "fitness": 16.841405868530273,
+      "reached": true
+    },
+    {
+      "map": 4,
+      "scenario": 3,
+      "fitness": 7.376597536558677,
+      "reached": false
+    },
+    {
+      "map": 4,
+      "scenario": 4,
+      "fitness": 9.573089450875315,
+      "reached": false
+    },
+    {
+      "map": 4,
+      "scenario": 5,
+      "fitness": 21.685232162475586,
+      "reached": true
+    },
+    {
+      "map": 5,
+      "scenario": 1,
+      "fitness": 4.367274449483602,
+      "reached": false
+    },
+    {
+      "map": 5,
+      "scenario": 2,
+      "fitness": 9.018874869753233,
+      "reached": false
+    },
+    {
+      "map": 5,
+      "scenario": 3,
+      "fitness": 4.472785553650638,
+      "reached": false
+    },
+    {
+      "map": 5,
+      "scenario": 4,
+      "fitness": 7.235163462008131,
+      "reached": false
+    },
+    {
+      "map": 5,
+      "scenario": 5,
+      "fitness": 4.931611821368335,
+      "reached": false
+    },
+    {
+      "map": 6,
+      "scenario": 1,
+      "fitness": 4.134079514566139,
+      "reached": false
+    },
+    {
+      "map": 6,
+      "scenario": 2,
+      "fitness": 7.45305738980332,
+      "reached": false
+    },
+    {
+      "map": 6,
+      "scenario": 3,
+      "fitness": 3.750103738169578,
+      "reached": false
+    },
+    {
+      "map": 6,
+      "scenario": 4,
+      "fitness": 5.351979407682961,
+      "reached": false
+    },
+    {
+      "map": 6,
+      "scenario": 5,
+      "fitness": 4.623278735377298,
+      "reached": false
+    }
+  ]
+}
