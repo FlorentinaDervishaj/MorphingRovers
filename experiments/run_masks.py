@@ -9,12 +9,15 @@ Optimizohen vetem 4 maskat 11x11.
                      edhe ne 30 dhe ruhet rover-i me i mire ne 30.
 --scenarios all    : kerkimi vlereson direkt ne te 30 skenaret (me ngadale, por pa overfitting).
 
+--workers N        : vlereson N rover-a njekohesisht (p.sh. 5 ne laptop me 6 berthama, 2 ne Colab).
+
 Ruan gjendjen pas çdo iterimi, keshtu qe nje run i nderprere vazhdon aty ku mbeti
 (thjesht ekzekutoje perseri me te njejtat argumente).
 
 Shembuj (nga folderi kryesor i projektit):
     python experiments/run_masks.py --init example --seed 1 --max-evals 300 --out results/masks_example_s1
     python experiments/run_masks.py --init example --scenarios all --seed 1 --max-evals 300 --out /content/drive/MyDrive/rovers/masks_all_s1
+    python experiments/run_masks.py --init example --scenarios all --seed 2 --max-evals 300 --workers 5 --out results/masks_all_s2
 """
 import os
 import sys
@@ -30,6 +33,7 @@ import cma
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src import chromosome as ch
 from src.evaluate import evaluate, udp, SUBSET, ALL_SCENARIOS, count_reached
+from src.parallel import ParallelEvaluator
 
 
 def parse_args():
@@ -43,6 +47,7 @@ def parse_args():
     p.add_argument("--scenarios", choices=["subset", "all"], default="subset",
                    help="ku vleresohet gjate kerkimit: 6 skenare ose te 30")
     p.add_argument("--max-evals", type=int, default=300)
+    p.add_argument("--workers", type=int, default=1, help="sa rover-a vleresohen njekohesisht")
     p.add_argument("--out", required=True, help="folderi ku ruhen rezultatet (p.sh. ne Google Drive)")
     return p.parse_args()
 
@@ -54,10 +59,11 @@ def main():
     log_path = os.path.join(a.out, "log.csv")
     rng = np.random.default_rng(a.seed)
 
-    base = np.asarray(udp.example(), dtype=float)
+    base = np.asarray(udp.example(), dtype=float)      
     example_masks = ch.get_masks(base)
     lb, ub = ch.bounds()
     lb_m, ub_m = lb[ch.MASKS], ub[ch.MASKS]
+
     search_scenarios = SUBSET if a.scenarios == "subset" else ALL_SCENARIOS
 
     def objective(m):
@@ -95,10 +101,16 @@ def main():
         print(f"Fillimi ({a.init}, {a.scenarios}): kerkimi = {best_f:.4f}, 30 skenare = {best_full:.4f}, "
               f"sigma0 = {sigma0:.4f}, popsize = {es.popsize}")
 
+    pe = ParallelEvaluator(a.workers) if a.workers > 1 else None
+    if pe:
+        print(f"Vleresim paralel me {a.workers} procese")
     while n_evals < a.max_evals and not es.stop():
         t = time.time()
         sols = es.ask()
-        fits = [objective(m) for m in sols]
+        if pe:
+            fits = pe.map([ch.set_masks(base, m) for m in sols], search_scenarios)
+        else:
+            fits = [objective(m) for m in sols]
         es.tell(sols, fits)
         n_evals += len(sols)
 
@@ -120,6 +132,9 @@ def main():
 
         print(f"iter {es.countiter:3d} | vleresime {n_evals:4d} | kerkimi: {min(fits):.4f} "
               f"| ne 30: {iter_full:.4f} | me i miri ne 30: {best_full:.4f} | {time.time() - t:.0f} s")
+
+    if pe:
+        pe.close()
 
     best_x = ch.repair(ch.set_masks(base, best_full_m))
     full, details = evaluate(best_x, ALL_SCENARIOS, details=True)
