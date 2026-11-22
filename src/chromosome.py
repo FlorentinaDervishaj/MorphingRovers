@@ -12,7 +12,7 @@ Indekset:
 """
 import numpy as np
 
-
+# Konstantet (te njejta me ato te evaluation_code.py, kontrollohen ne teste)
 NUM_MODES = 4
 MASK_SIZE = 11
 NUM_MASK_PARAMS = NUM_MODES * MASK_SIZE ** 2      # 484
@@ -22,18 +22,19 @@ NUM_NN_PARAMS = NUM_BIASES + NUM_WEIGHTS          # 18 642
 NUM_INTEGERS = 7
 TOTAL_LENGTH = NUM_MASK_PARAMS + NUM_NN_PARAMS + NUM_INTEGERS   # 19 133
 
-
+# Kufijte e ESA-s
 FLOAT_MIN, FLOAT_MAX = -100.0, 100.0
 CENTRE_MIN = 1e-16
 INT_LOWER = np.array([0, 0, 0, 0, 0, 0, 0])
 INT_UPPER = np.array([1, 1, 6, 6, 6, 6, 4])
 
-
+# Pozicionet ku fillon secila pjese
 MASKS = slice(0, NUM_MASK_PARAMS)
 BIASES = slice(NUM_MASK_PARAMS, NUM_MASK_PARAMS + NUM_BIASES)
 WEIGHTS = slice(NUM_MASK_PARAMS + NUM_BIASES, NUM_MASK_PARAMS + NUM_NN_PARAMS)
 INTEGERS = slice(NUM_MASK_PARAMS + NUM_NN_PARAMS, TOTAL_LENGTH)
 
+# Indekset e qendres se seciles maske (duhet te jene >= CENTRE_MIN)
 MASK_CENTRES = [m * MASK_SIZE ** 2 + MASK_SIZE ** 2 // 2 for m in range(NUM_MODES)]  # 60, 181, 302, 423
 
 
@@ -102,3 +103,21 @@ def bounds():
     lb[INTEGERS] = INT_LOWER
     ub[INTEGERS] = INT_UPPER
     return lb, ub
+
+
+# --- Shtresa e daljes se rrjetit (output: 40 -> 2) ---
+# Ne kodin e ESA-s parametrat renditen sipas shtresave: inp, conv, conv2, lin2, lin3, lin4, recurr, output.
+# Prandaj shtresa e daljes eshte e fundit: 2 biaset e fundit dhe 80 peshat e fundit (2 x 40).
+OUTPUT_BIAS_IDX = np.arange(BIASES.stop - 2, BIASES.stop)              # 628, 629
+OUTPUT_WEIGHT_IDX = np.arange(WEIGHTS.stop - 2 * 40, WEIGHTS.stop)     # 19046 .. 19125
+OUTPUT_LAYER_IDX = np.concatenate([OUTPUT_BIAS_IDX, OUTPUT_WEIGHT_IDX])  # 82 vlera
+MASK_IDX = np.arange(MASKS.start, MASKS.stop)                           # 484 vlera
+
+
+def free_indices(name):
+    """Indekset qe optimizohen: 'masks' (484) ose 'masks+output' (484 + 82 = 566)."""
+    if name == "masks":
+        return MASK_IDX
+    if name == "masks+output":
+        return np.concatenate([MASK_IDX, OUTPUT_LAYER_IDX])
+    raise ValueError(f"I panjohur: {name}")

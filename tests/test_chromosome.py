@@ -1,3 +1,4 @@
+"""Testet per src/chromosome.py. Ekzekuto nga folderi kryesor: python -m pytest"""
 import os
 import numpy as np
 import pytest
@@ -26,7 +27,7 @@ def test_set_masks_changes_only_masks():
     y = ch.set_masks(x, np.zeros(484))
     assert np.all(y[:484] == 0)
     assert np.array_equal(y[484:], x[484:])
-    assert not np.all(x[:484] == 0)          # origjinali nuk ndryshoi
+    assert not np.all(x[:484] == 0)         
 
 
 def test_repair_respects_bounds():
@@ -48,3 +49,10 @@ def test_example_rover_is_valid():
     x = np.load(EXAMPLE)
     assert x.shape == (ch.TOTAL_LENGTH,)
     assert np.array_equal(ch.merge(**ch.split(x)), x)
+
+
+def test_output_layer_indices():
+    assert ch.OUTPUT_LAYER_IDX.size == 82
+    assert list(ch.OUTPUT_BIAS_IDX) == [628, 629]
+    assert ch.OUTPUT_WEIGHT_IDX[0] == 19046 and ch.OUTPUT_WEIGHT_IDX[-1] == 19125
+    assert ch.free_indices("masks+output").size == 566
