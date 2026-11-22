@@ -1,8 +1,10 @@
 """
-run_masks.py - kerkimi i maskave me CMA-ES (484 vlera).
+run_masks.py - kerkimi me CMA-ES i maskave (dhe, sipas deshires, i shtreses se daljes se rrjetit).
 
-Rrjeti neural, biaset dhe 7 numrat e plote merren nga rover-i shembull i ESA-s dhe mbeten FIKS.
-Optimizohen vetem 4 maskat 11x11.
+--free masks         : optimizohen vetem 4 maskat 11x11 (484 vlera); pjesa tjeter mbetet FIKS.
+--free masks+output  : maskat + shtresa e daljes se rrjetit (484 + 82 = 566 vlera).
+--start rover.npy    : rover-i nga fillon kerkimi (p.sh. me i miri nga faza e maskave).
+                       Nese mungon, fillon nga rover-i shembull i ESA-s.
 
 --scenarios subset : kerkimi vlereson ne 6 skenare (5x me shpejt), por 6 skenare mund te
                      mashtrojne (overfitting), prandaj me i miri i çdo iterimi kontrollohet
@@ -15,9 +17,9 @@ Ruan gjendjen pas çdo iterimi, keshtu qe nje run i nderprere vazhdon aty ku mbe
 (thjesht ekzekutoje perseri me te njejtat argumente).
 
 Shembuj (nga folderi kryesor i projektit):
-    python experiments/run_masks.py --init example --seed 1 --max-evals 300 --out results/masks_example_s1
-    python experiments/run_masks.py --init example --scenarios all --seed 1 --max-evals 300 --out /content/drive/MyDrive/rovers/masks_all_s1
-    python experiments/run_masks.py --init example --scenarios all --seed 2 --max-evals 300 --workers 5 --out results/masks_all_s2
+    py experiments/run_masks.py --scenarios all --seed 2 --workers 5 --out results/masks_all_s2
+    py experiments/run_masks.py --free masks+output --start results/masks_all_s2/best_rover.npy
+                                --scenarios all --seed 1 --workers 5 --out results/output_s1
 """
 import os
 import sys
@@ -38,17 +40,20 @@ from src.parallel import ParallelEvaluator
 
 def parse_args():
     p = argparse.ArgumentParser()
+    p.add_argument("--free", choices=["masks", "masks+output"], default="masks",
+                   help="cilat pjese te rover-it optimizohen")
+    p.add_argument("--start", default=None, help="rover-i fillestar (.npy); nese mungon, ai shembull i ESA-s")
     p.add_argument("--init", choices=["example", "random"], default="example",
-                   help="maskat fillestare: ato te rover-it shembull ose te rastesishme")
+                   help="maskat fillestare: ato te rover-it fillestar ose te rastesishme")
     p.add_argument("--seed", type=int, default=1)
-    p.add_argument("--sigma", type=float, default=None,
-                   help="hapi fillestar; nese mungon = 0.2 * devijimi standard i maskave fillestare")
-    p.add_argument("--popsize", type=int, default=None, help="nese mungon, vlera e paracaktuar e CMA-ES (22)")
+    p.add_argument("--sigma", type=float, default=1.0,
+                   help="shumezues i hapit; hapi i çdo pjese = sigma * 0.2 * devijimi standard i asaj pjese")
+    p.add_argument("--popsize", type=int, default=None, help="nese mungon, vlera e paracaktuar e CMA-ES")
     p.add_argument("--scenarios", choices=["subset", "all"], default="subset",
                    help="ku vleresohet gjate kerkimit: 6 skenare ose te 30")
     p.add_argument("--max-evals", type=int, default=300)
     p.add_argument("--workers", type=int, default=1, help="sa rover-a vleresohen njekohesisht")
-    p.add_argument("--out", required=True, help="folderi ku ruhen rezultatet (p.sh. ne Google Drive)")
+    p.add_argument("--out", required=True, help="folderi ku ruhen rezultatet")
     return p.parse_args()
 
 
@@ -59,47 +64,58 @@ def main():
     log_path = os.path.join(a.out, "log.csv")
     rng = np.random.default_rng(a.seed)
 
-    base = np.asarray(udp.example(), dtype=float)      
-    example_masks = ch.get_masks(base)
+    base = np.asarray(np.load(a.start) if a.start else udp.example(), dtype=float)
+    idx = ch.free_indices(a.free)                
     lb, ub = ch.bounds()
-    lb_m, ub_m = lb[ch.MASKS], ub[ch.MASKS]
+    lb_f, ub_f = lb[idx], ub[idx]
+
+    def build(v):
+        """Rover-i i plote: base, me vlerat v ne pozicionet idx."""
+        y = base.copy()
+        y[idx] = v
+        return y
 
     search_scenarios = SUBSET if a.scenarios == "subset" else ALL_SCENARIOS
 
-    def objective(m):
-        return evaluate(ch.set_masks(base, m), search_scenarios)
+    def objective(v):
+        return evaluate(build(v), search_scenarios)
 
     if os.path.exists(ckpt_path):
         with open(ckpt_path, "rb") as f:
             state = pickle.load(f)
-        es, n_evals, best_f, best_m = state["es"], state["n_evals"], state["best_f"], state["best_m"]
-        best_full, best_full_m = state["best_full"], state["best_full_m"]
+        es, n_evals, best_f, best_v = state["es"], state["n_evals"], state["best_f"], state["best_v"]
+        best_full, best_full_v = state["best_full"], state["best_full_v"]
         print(f"Vazhdoj nga checkpoint-i: {n_evals} vleresime, me i miri ne 30 skenare {best_full:.4f}")
     else:
-        if a.init == "example":
-            m0 = example_masks.copy()
-        else:
-            m0 = rng.uniform(example_masks.min(), example_masks.max(), ch.NUM_MASK_PARAMS)
-        m0 = np.clip(m0, lb_m, ub_m)
-        sigma0 = a.sigma if a.sigma is not None else 0.2 * float(np.std(example_masks))
-        opts = {"bounds": [list(lb_m), list(ub_m)], "seed": a.seed, "verbose": -9}
+        v0 = base[idx].copy()
+        if a.init == "random":   
+            masks = base[ch.MASK_IDX]
+            v0[:ch.NUM_MASK_PARAMS] = rng.uniform(masks.min(), masks.max(), ch.NUM_MASK_PARAMS)
+        v0 = np.clip(v0, lb_f, ub_f)
+
+        stds = np.full(len(idx), 0.2 * float(np.std(base[ch.MASK_IDX])))
+        if a.free == "masks+output":
+            stds[ch.NUM_MASK_PARAMS:] = 0.2 * float(np.std(base[ch.OUTPUT_LAYER_IDX]))
+        opts = {"bounds": [list(lb_f), list(ub_f)], "seed": a.seed, "verbose": -9, "CMA_stds": list(stds)}
         if a.popsize:
             opts["popsize"] = a.popsize
-        es = cma.CMAEvolutionStrategy(m0, sigma0, opts)
+        es = cma.CMAEvolutionStrategy(v0, a.sigma, opts)
+
         n_evals = 0
-        best_m = m0
-        best_f = objective(m0)         
-        best_full_m = m0
-        best_full = best_f if a.scenarios == "all" else evaluate(ch.set_masks(base, m0), ALL_SCENARIOS)
+        best_v = v0
+        best_f = objective(v0)
+        best_full_v = v0
+        best_full = best_f if a.scenarios == "all" else evaluate(build(v0), ALL_SCENARIOS)
         n_evals += 1
         with open(log_path, "w", newline="") as f:
-            csv.writer(f).writerow(["iteration", "n_evals", "best_in_iter_search", "mean_in_iter_search", "best_so_far_search",
-                                    "iter_best_on_30", "best_so_far_30", "sigma", "seconds"])
+            csv.writer(f).writerow(["iteration", "n_evals", "best_in_iter_search", "mean_in_iter_search",
+                                    "best_so_far_search", "iter_best_on_30", "best_so_far_30", "sigma", "seconds"])
         with open(os.path.join(a.out, "config.json"), "w") as f:
-            json.dump({**vars(a), "sigma0": sigma0, "popsize": es.popsize,
+            json.dump({**vars(a), "n_free": int(len(idx)), "popsize": es.popsize,
+                       "step_masks": float(stds[0]), "step_output": float(stds[-1]),
                        "start_fitness_search": best_f, "start_fitness_30": best_full}, f, indent=2)
-        print(f"Fillimi ({a.init}, {a.scenarios}): kerkimi = {best_f:.4f}, 30 skenare = {best_full:.4f}, "
-              f"sigma0 = {sigma0:.4f}, popsize = {es.popsize}")
+        print(f"Fillimi ({a.free}, {a.scenarios}, {len(idx)} vlera): kerkimi = {best_f:.4f}, "
+              f"30 skenare = {best_full:.4f}, popsize = {es.popsize}")
 
     pe = ParallelEvaluator(a.workers) if a.workers > 1 else None
     if pe:
@@ -108,27 +124,27 @@ def main():
         t = time.time()
         sols = es.ask()
         if pe:
-            fits = pe.map([ch.set_masks(base, m) for m in sols], search_scenarios)
+            fits = pe.map([build(v) for v in sols], search_scenarios)
         else:
-            fits = [objective(m) for m in sols]
+            fits = [objective(v) for v in sols]
         es.tell(sols, fits)
         n_evals += len(sols)
 
         i = int(np.argmin(fits))
         if fits[i] < best_f:
-            best_f, best_m = fits[i], np.array(sols[i])
+            best_f, best_v = fits[i], np.array(sols[i])
 
-        iter_full = fits[i] if a.scenarios == "all" else evaluate(ch.set_masks(base, sols[i]), ALL_SCENARIOS)
+        iter_full = fits[i] if a.scenarios == "all" else evaluate(build(sols[i]), ALL_SCENARIOS)
         if iter_full < best_full:
-            best_full, best_full_m = iter_full, np.array(sols[i])
+            best_full, best_full_v = iter_full, np.array(sols[i])
 
         with open(log_path, "a", newline="") as f:
             csv.writer(f).writerow([es.countiter, n_evals, min(fits), float(np.mean(fits)), best_f,
                                     iter_full, best_full, es.sigma, round(time.time() - t, 1)])
         with open(ckpt_path, "wb") as f:
-            pickle.dump({"es": es, "n_evals": n_evals, "best_f": best_f, "best_m": best_m,
-                         "best_full": best_full, "best_full_m": best_full_m}, f)
-        np.save(os.path.join(a.out, "best_rover.npy"), ch.repair(ch.set_masks(base, best_full_m)))
+            pickle.dump({"es": es, "n_evals": n_evals, "best_f": best_f, "best_v": best_v,
+                         "best_full": best_full, "best_full_v": best_full_v}, f)
+        np.save(os.path.join(a.out, "best_rover.npy"), ch.repair(build(best_full_v)))
 
         print(f"iter {es.countiter:3d} | vleresime {n_evals:4d} | kerkimi: {min(fits):.4f} "
               f"| ne 30: {iter_full:.4f} | me i miri ne 30: {best_full:.4f} | {time.time() - t:.0f} s")
@@ -136,7 +152,7 @@ def main():
     if pe:
         pe.close()
 
-    best_x = ch.repair(ch.set_masks(base, best_full_m))
+    best_x = ch.repair(build(best_full_v))
     full, details = evaluate(best_x, ALL_SCENARIOS, details=True)
     summary = {"best_fitness_search": best_f, "full_fitness_30": full,
                "reached_30": count_reached(details), "n_evals": n_evals, "scenarios": details}
@@ -144,7 +160,6 @@ def main():
         json.dump(summary, f, indent=2)
     print(f"\nPerfundoi. Me i miri ne kerkim: {best_f:.4f} | rover-i i ruajtur, 30 skenare: {full:.4f} "
           f"| mostra te arritura: {summary['reached_30']}/30")
-    print("(Rover-i shembull: 4.563 ne 6 skenare, 7.979 ne 30, 0/30 te arritura)")
 
 
 if __name__ == "__main__":
