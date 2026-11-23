@@ -18,5 +18,20 @@
     "rover": "results/masks_all_s3/best_rover.npy",
     "fitness_30": 7.04859789331044,
     "reached": 2
+  },
+  {
+    "rover": "results/output_s1/best_rover.npy",
+    "fitness_30": 4.425645325055382,
+    "reached": 11
+  },
+  {
+    "rover": "results/output_s2/best_rover.npy",
+    "fitness_30": 4.289489765206031,
+    "reached": 7
+  },
+  {
+    "rover": "results/output_s3/best_rover.npy",
+    "fitness_30": 4.621813707073422,
+    "reached": 9
   }
 ]
