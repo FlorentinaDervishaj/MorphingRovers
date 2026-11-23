@@ -1,0 +1,17 @@
+{
+  "free": "masks+output",
+  "start": "results/masks_all_s2/best_rover.npy",
+  "init": "example",
+  "seed": 1,
+  "sigma": 1.0,
+  "popsize": 23,
+  "scenarios": "all",
+  "max_evals": 300,
+  "workers": 5,
+  "out": "results/output_s1",
+  "n_free": 566,
+  "step_masks": 0.10295524125234329,
+  "step_output": 0.2302823399599554,
+  "start_fitness_search": 6.928696865896859,
+  "start_fitness_30": 6.928696865896859
+}
