@@ -3,6 +3,8 @@ run_masks.py - kerkimi me CMA-ES i maskave (dhe, sipas deshires, i shtreses se d
 
 --free masks         : optimizohen vetem 4 maskat 11x11 (484 vlera); pjesa tjeter mbetet FIKS.
 --free masks+output  : maskat + shtresa e daljes se rrjetit (484 + 82 = 566 vlera).
+--free masks+output+hidden : + shtresa e fundit e fshehur dhe kujtesa (566 + 3240 = 3806 vlera).
+--diagonal           : CMA-ES me kovariance diagonale (sep-CMA); me i shpejte ne shume dimensione.
 --start rover.npy    : rover-i nga fillon kerkimi (p.sh. me i miri nga faza e maskave).
                        Nese mungon, fillon nga rover-i shembull i ESA-s.
 
@@ -40,8 +42,10 @@ from src.parallel import ParallelEvaluator
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--free", choices=["masks", "masks+output"], default="masks",
+    p.add_argument("--free", choices=["masks", "masks+output", "masks+output+hidden"], default="masks",
                    help="cilat pjese te rover-it optimizohen")
+    p.add_argument("--diagonal", action="store_true",
+                   help="sep-CMA: vetem variancat, pa korrelacione (per shume dimensione)")
     p.add_argument("--start", default=None, help="rover-i fillestar (.npy); nese mungon, ai shembull i ESA-s")
     p.add_argument("--init", choices=["example", "random"], default="example",
                    help="maskat fillestare: ato te rover-it fillestar ose te rastesishme")
@@ -65,7 +69,7 @@ def main():
     rng = np.random.default_rng(a.seed)
 
     base = np.asarray(np.load(a.start) if a.start else udp.example(), dtype=float)
-    idx = ch.free_indices(a.free)                
+    idx = ch.free_indices(a.free)                 # pozicionet qe optimizohen
     lb, ub = ch.bounds()
     lb_f, ub_f = lb[idx], ub[idx]
 
@@ -88,15 +92,20 @@ def main():
         print(f"Vazhdoj nga checkpoint-i: {n_evals} vleresime, me i miri ne 30 skenare {best_full:.4f}")
     else:
         v0 = base[idx].copy()
-        if a.init == "random":   
+        if a.init == "random":
             masks = base[ch.MASK_IDX]
             v0[:ch.NUM_MASK_PARAMS] = rng.uniform(masks.min(), masks.max(), ch.NUM_MASK_PARAMS)
         v0 = np.clip(v0, lb_f, ub_f)
 
         stds = np.full(len(idx), 0.2 * float(np.std(base[ch.MASK_IDX])))
-        if a.free == "masks+output":
-            stds[ch.NUM_MASK_PARAMS:] = 0.2 * float(np.std(base[ch.OUTPUT_LAYER_IDX]))
+        n_m, n_o = ch.NUM_MASK_PARAMS, ch.OUTPUT_LAYER_IDX.size
+        if a.free in ("masks+output", "masks+output+hidden"):
+            stds[n_m:n_m + n_o] = 0.2 * float(np.std(base[ch.OUTPUT_LAYER_IDX]))
+        if a.free == "masks+output+hidden":
+            stds[n_m + n_o:] = 0.2 * float(np.std(base[ch.HIDDEN_LAYER_IDX]))
         opts = {"bounds": [list(lb_f), list(ub_f)], "seed": a.seed, "verbose": -9, "CMA_stds": list(stds)}
+        if a.diagonal:
+            opts["CMA_diagonal"] = True
         if a.popsize:
             opts["popsize"] = a.popsize
         es = cma.CMAEvolutionStrategy(v0, a.sigma, opts)
@@ -112,7 +121,7 @@ def main():
                                     "best_so_far_search", "iter_best_on_30", "best_so_far_30", "sigma", "seconds"])
         with open(os.path.join(a.out, "config.json"), "w") as f:
             json.dump({**vars(a), "n_free": int(len(idx)), "popsize": es.popsize,
-                       "step_masks": float(stds[0]), "step_output": float(stds[-1]),
+                       "step_masks": float(stds[0]), "step_last_block": float(stds[-1]),
                        "start_fitness_search": best_f, "start_fitness_30": best_full}, f, indent=2)
         print(f"Fillimi ({a.free}, {a.scenarios}, {len(idx)} vlera): kerkimi = {best_f:.4f}, "
               f"30 skenare = {best_full:.4f}, popsize = {es.popsize}")
