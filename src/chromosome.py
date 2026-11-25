@@ -114,10 +114,26 @@ OUTPUT_LAYER_IDX = np.concatenate([OUTPUT_BIAS_IDX, OUTPUT_WEIGHT_IDX])  # 82 vl
 MASK_IDX = np.arange(MASKS.start, MASKS.stop)                           # 484 vlera
 
 
+# --- Shtresa e fundit e fshehur (lin4: 40 -> 40) dhe lidhja e kujteses (recurr: 40 -> 40) ---
+# Renditja e peshave brenda WEIGHTS: inp 360, conv 968, conv2 2048, lin2 10240, lin3 1600,
+# lin4 1600, recurr 1600, output 80. Renditja e biaseve: inp 40, conv 8, conv2 16, lin3 40, lin4 40, output 2.
+HIDDEN_BIAS_IDX = np.arange(BIASES.start + 104, BIASES.start + 144)       # lin4: 588 .. 627
+HIDDEN_WEIGHT_IDX = np.arange(WEIGHTS.start + 15216, WEIGHTS.start + 16816)  # lin4: 15846 .. 17445
+RECURR_WEIGHT_IDX = np.arange(WEIGHTS.start + 16816, WEIGHTS.start + 18416)  # recurr: 17446 .. 19045
+HIDDEN_LAYER_IDX = np.concatenate([HIDDEN_BIAS_IDX, HIDDEN_WEIGHT_IDX, RECURR_WEIGHT_IDX])  # 3240 vlera
+
+
 def free_indices(name):
-    """Indekset qe optimizohen: 'masks' (484) ose 'masks+output' (484 + 82 = 566)."""
+    """
+    Indekset qe optimizohen:
+      'masks'               484
+      'masks+output'        484 + 82          = 566
+      'masks+output+hidden' 484 + 82 + 3240   = 3806
+    """
     if name == "masks":
         return MASK_IDX
     if name == "masks+output":
         return np.concatenate([MASK_IDX, OUTPUT_LAYER_IDX])
+    if name == "masks+output+hidden":
+        return np.concatenate([MASK_IDX, OUTPUT_LAYER_IDX, HIDDEN_LAYER_IDX])
     raise ValueError(f"I panjohur: {name}")

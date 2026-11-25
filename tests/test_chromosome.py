@@ -27,7 +27,7 @@ def test_set_masks_changes_only_masks():
     y = ch.set_masks(x, np.zeros(484))
     assert np.all(y[:484] == 0)
     assert np.array_equal(y[484:], x[484:])
-    assert not np.all(x[:484] == 0)         
+    assert not np.all(x[:484] == 0)          
 
 
 def test_repair_respects_bounds():
@@ -56,3 +56,11 @@ def test_output_layer_indices():
     assert list(ch.OUTPUT_BIAS_IDX) == [628, 629]
     assert ch.OUTPUT_WEIGHT_IDX[0] == 19046 and ch.OUTPUT_WEIGHT_IDX[-1] == 19125
     assert ch.free_indices("masks+output").size == 566
+
+
+def test_hidden_layer_indices():
+    assert ch.HIDDEN_LAYER_IDX.size == 3240
+    assert list(ch.HIDDEN_BIAS_IDX[[0, -1]]) == [588, 627]
+    assert ch.RECURR_WEIGHT_IDX[-1] + 1 == ch.OUTPUT_WEIGHT_IDX[0]
+    idx = ch.free_indices("masks+output+hidden")
+    assert idx.size == 3806 and len(set(idx)) == 3806           
