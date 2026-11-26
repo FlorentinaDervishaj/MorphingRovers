@@ -42,3 +42,16 @@ py experiments/validate.py results/output_s2/best_rover.npy
 py analysis/plots.py
 py analysis/trajectories.py results/output_s2/best_rover.npy
 ```
+## Rezultatet
+Të gjitha të vlerësuara në të njëjtin kompjuter, në 30 skenarë, me 3 seed-e për fazë.
+
+| Rover | Vlera të optimizuara | Fitness | Mostra të arritura | Ndryshimi |
+|---|---|---|---|---|
+| Rover-i shembull i ESA-s | – | 7.984 | 0/30 | – |
+| Faza 1: maskat | 484 | 7.029 ± 0.092 | 1–2 | −12.0% |
+| Faza 2: maskat + shtresa e daljes | 566 | **4.446 ± 0.167** | **7–11** | **−44.3%** |
+| Faza 3: + shtresa e fshehur | 3 806 | pa përmirësim | – | – |
+
+Rover-i më i mirë: **4.290**, 7/30 mostra (faza 2, seed 2).
+
+![Konvergjenca](figures/convergence.png)
