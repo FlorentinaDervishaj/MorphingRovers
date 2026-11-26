@@ -1,0 +1,18 @@
+{
+  "free": "masks+output+hidden",
+  "diagonal": true,
+  "start": "results/output_s2/best_rover.npy",
+  "init": "example",
+  "seed": 1,
+  "sigma": 0.2,
+  "popsize": 28,
+  "scenarios": "all",
+  "max_evals": 200,
+  "workers": 5,
+  "out": "results/hidden_s1_small",
+  "n_free": 3806,
+  "step_masks": 0.10468916173823817,
+  "step_last_block": 0.06202910072376994,
+  "start_fitness_search": 4.289489765206031,
+  "start_fitness_30": 4.289489765206031
+}
