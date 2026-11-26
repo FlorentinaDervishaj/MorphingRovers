@@ -55,3 +55,18 @@ Të gjitha të vlerësuara në të njëjtin kompjuter, në 30 skenarë, me 3 see
 Rover-i më i mirë: **4.290**, 7/30 mostra (faza 2, seed 2).
 
 ![Konvergjenca](figures/convergence.png)
+
+## Gjetjet kryesore
+- **Kufiri ishte te drejtimi i rover-it, jo te maskat.** Analiza e rover-it shembull tregoi që ai lëviz,
+  por jo drejt mostrës. Shtresa e daljes (82 numra) dha 37% përmirësim mbi fazën 1.
+- **Maskat ndryshuan vetëm 3–5%** ndaj shembullit, kështu që struktura e tyre vjen nga ESA.
+  Megjithatë, kjo mjaftoi për 12% përmirësim, sepse fitness-i është shumë i ndjeshëm ndaj maskave.
+- **Fitimet më të mëdha erdhën nga skenarët e shkurtër.** P.sh. Harta 4, Skenari 5: 36.6 → 2.1.
+- **Kërkimi në 6 skenarë çon në overfitting:** rezultat më i mirë në 6 dhe më i keq në 30.
+  Prandaj çdo rover vlerësohet në të 30 skenarët.
+- **Faza 3 nuk ndihmoi** (σ = 1.0 dhe 0.2). Edhe ndryshimet e vogla të rrjetit japin rreth 4.55
+  kundrejt 4.29, gjë që tregon një peizazh shumë të ashpër të fitness-it.
+- **Platforma ka rëndësi:** i njëjti rover jep 7.979 në Colab dhe 7.984 në Windows,
+  prandaj të gjitha krahasimet bëhen në të njëjtin kompjuter.
+
+![Trajektoret](figures/trajectories_output_s2.png)
