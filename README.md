@@ -70,3 +70,6 @@ Rover-i më i mirë: **4.290**, 7/30 mostra (faza 2, seed 2).
   prandaj të gjitha krahasimet bëhen në të njëjtin kompjuter.
 
 ![Trajektoret](figures/trajectories_output_s2.png)
+
+## Autorja
+Florentina Dervishaj
