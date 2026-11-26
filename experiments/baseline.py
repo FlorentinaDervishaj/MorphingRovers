@@ -1,11 +1,14 @@
-
+import os
+import sys
 import json
 import numpy as np
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import evaluation_code as ec
 from evaluation_code import udp
 
 x = udp.example()
-score, rec = udp.pretty(x, verbose=True)   # tabela zyrtare e ESA-s, 6 harta x 5 skenare
+score, rec = udp.pretty(x, verbose=True)   
 
 rows = []
 print("\nHarta Skenari  Fitness  Arriti?  Lev. (px)  Dist. fund. / fill.")
@@ -28,6 +31,6 @@ n_reached = sum(r["reached"] for r in rows)
 print(f"\nMesatarja: {score[0]:.3f}   Mostra te arritura: {n_reached}/30")
 print("(Rover qe s'levizet: ~10.01. Me e ulet = me mire.)")
 
-with open("baseline_example.json", "w") as f:
+with open(os.path.join("results", "baseline_example.json"), "w") as f:
     json.dump({"mean_fitness": score[0], "reached": n_reached, "scenarios": rows}, f, indent=2)
-print("U ruajt: baseline_example.json")
+print("U ruajt: results/baseline_example.json")
